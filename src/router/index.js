@@ -14,6 +14,13 @@ const router = createRouter({
         requiresAuth: true,
       },
     },
+    {
+      path: "/favorites",
+      component: () => import("../views/UserImageIds.vue"),
+      meta: {
+        requiresAuth: true,
+      },
+    },
   ],
 });
 

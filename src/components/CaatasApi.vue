@@ -1,10 +1,8 @@
-<!-- src/components/CatComponent.vue -->
 <template>
   <div>
     <h1>Cat as a Service</h1>
     <img :src="catImageUrl" alt="Random Cat" class="cat-image" />
     <div>
-      <button @click="getNewCat">Get New Cat</button>
       <button @click="likeCat">Like</button>
       <button @click="dislikeCat">Dislike</button>
     </div>
@@ -13,12 +11,22 @@
 
 <script>
 import axios from 'axios';
+import { getAuth } from 'firebase/auth';
+import { getDatabase, ref, push } from 'firebase/database';
+import { initializeApp } from 'firebase/app';
+import { firebaseConfig } from '@/main';
+
+// Initialize Firebase app
+initializeApp(firebaseConfig);
+
+const auth = getAuth(); 
+const database = getDatabase(); 
+
 export default {
+
   data() {
     return {
       catImageUrl: "",
-      likedCats: [],
-      dislikedCats: [],
     };
   },
   methods: {
@@ -39,19 +47,43 @@ export default {
       }
     },
     likeCat() {
-      // Add the current cat URL to the likedCats array
-      this.likedCats.push(this.catImageUrl);
+      this.saveUserInfo('LikedCats');
       this.getNewCat();
     },
     dislikeCat() {
-      // Add the current cat URL to the dislikedCats array
-      this.dislikedCats.push(this.catImageUrl);
+      this.saveUserInfo('DislikedCats');
       this.getNewCat();
     },
     getRandomValue() {
       // Generate a random value for the API parameters
       return Math.floor(Math.random() * Math.floor(Math.random() * 1205));
     },
+    async saveUserInfo(chosenDatabase) {
+      // Get the current logged-in user
+      const user = auth.currentUser;
+
+      if (user) {
+        // User is signed in.
+        const userEmail = user.email;
+
+        // Get a reference to the 'user_info' table
+        const userTable = ref(database, chosenDatabase);
+
+        // Push user information to the database
+        push(userTable, {
+          email: userEmail,
+          imageId: this.catImageUrl.split('/').pop(), // Extract the catId from the image URL
+        });
+
+      } else {
+        // No user is signed in.
+        alert('No user is signed in.');
+      }
+    },
+  },
+  created() {
+    // Call getNewCat when the component is created
+    this.getNewCat();
   },
 };
 </script>

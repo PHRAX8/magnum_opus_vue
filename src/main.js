@@ -5,11 +5,14 @@ import router from "./router";
 import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
+import 'firebase/auth';
+import 'firebase/database';
 
 // Your web app's Firebase configuration
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "AIzaSyBnaAx4bFB4N99GwMhPXOd1oMzCQtHEI2Q",
   authDomain: "magnumopus-a5904.firebaseapp.com",
+  databaseURL: "https://magnumopus-a5904-default-rtdb.firebaseio.com",
   projectId: "magnumopus-a5904",
   storageBucket: "magnumopus-a5904.appspot.com",
   messagingSenderId: "571023823002",
