@@ -29,7 +29,7 @@ export default {
     const errorMessage = ref();
     const router = useRouter();
 
-    const register = async () => {
+    const signIn = async () => {
       try {
         const auth = getAuth();
         const userCredential = await signInWithEmailAndPassword(
@@ -49,7 +49,7 @@ export default {
     return {
       email,
       password,
-      register,
+      signIn,
       errorMessage,
     };
   },
