@@ -1,98 +1,173 @@
 <template>
-  <div>
-    <h1>Cat as a Service</h1>
-    <img :src="catImageUrl" alt="Random Cat" class="cat-image" />
-    <div>
-      <button @click="likeCat">Like</button>
-      <button @click="dislikeCat">Dislike</button>
+  <div class="cute-cat-container">
+    <h1>Random Cat</h1>
+    <div class="cute-image-container">
+      <img
+        :src="catImageUrl"
+        alt="Random Cute Cat"
+        class="cute-cat-image"
+        @load="imageLoaded"
+      />
+      <div v-if="loading" class="cute-loading-overlay">
+        <div class="cute-loading-circle"></div>
+      </div>
+      <div v-if="imageLoaded && !loading" class="cute-button-container">
+        <button @click="likeCat" class="cute-heart-button" title="Like">
+          ❤️
+        </button>
+        <button
+          @click="dislikeCat"
+          class="cute-broken-heart-button"
+          title="Dislike"
+        >
+          💔
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-import { getAuth } from 'firebase/auth';
-import { getDatabase, ref, push } from 'firebase/database';
-import { initializeApp } from 'firebase/app';
-import { firebaseConfig } from '@/main';
+import axios from "axios";
+import { getAuth } from "firebase/auth";
+import { getDatabase, ref, push } from "firebase/database";
+import { initializeApp } from "firebase/app";
+import { firebaseConfig } from "@/main";
 
-// Initialize Firebase app
 initializeApp(firebaseConfig);
 
-const auth = getAuth(); 
-const database = getDatabase(); 
+const auth = getAuth();
+const database = getDatabase();
 
 export default {
-
   data() {
     return {
       catImageUrl: "",
+      loading: true,
     };
   },
   methods: {
     async getNewCat() {
       try {
-        // Fetch a random cat from the API
         const response = await axios.get(
           `https://cataas.com/api/cats?limit=${this.getRandomValue()}&skip=${this.getRandomValue()}`
         );
 
-        // Extract the first cat's ID
         const catId = response.data[0]._id;
-
-        // Set the cat image URL
         this.catImageUrl = `https://cataas.com/cat/${catId}`;
       } catch (error) {
         console.error("Error fetching random cat:", error);
       }
     },
-    likeCat() {
-      this.saveUserInfo('LikedCats');
-      this.getNewCat();
+    async likeCat() {
+      await this.saveUserInfo("LikedCats");
     },
-    dislikeCat() {
-      this.saveUserInfo('DislikedCats');
-      this.getNewCat();
+    async dislikeCat() {
+      await this.saveUserInfo("DislikedCats");
     },
     getRandomValue() {
-      // Generate a random value for the API parameters
       return Math.floor(Math.random() * Math.floor(Math.random() * 1205));
     },
     async saveUserInfo(chosenDatabase) {
-      // Get the current logged-in user
       const user = auth.currentUser;
 
       if (user) {
-        // User is signed in.
         const userEmail = user.email;
-
-        // Get a reference to the 'user_info' table
         const userTable = ref(database, chosenDatabase);
 
-        // Push user information to the database
         push(userTable, {
           email: userEmail,
-          imageId: this.catImageUrl.split('/').pop(), // Extract the catId from the image URL
+          imageId: this.catImageUrl.split("/").pop(),
         });
-
       } else {
-        // No user is signed in.
-        alert('No user is signed in.');
+        alert("No user is signed in.");
       }
+      this.getNewCat();
+    },
+    imageLoaded() {
+      this.loading = false;
     },
   },
   created() {
-    // Call getNewCat when the component is created
     this.getNewCat();
   },
 };
 </script>
 
 <style scoped>
-/* Add your custom styles here */
-.cat-image {
+.cute-cat-container {
+  text-align: center;
+}
+
+.cute-image-container {
+  position: relative;
+  background-color: #fce3e3; /* Pastel pink background */
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.cute-cat-image {
   max-width: 100%;
   max-height: 400px;
   object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+}
+
+.cute-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cute-loading-circle {
+  border: 4px solid #f3f3f3; /* Light grey */
+  border-top: 4px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+.cute-button-container {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+}
+
+.cute-heart-button,
+.cute-broken-heart-button {
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  border-radius: 50%;
+  text-align: center;
+  cursor: pointer;
+  background: #ffccd4; /* Light pink background */
+  border: none;
+  transition: background 0.3s ease;
+}
+
+.cute-heart-button:hover,
+.cute-broken-heart-button:hover {
+  background: #ffb3bd; /* Slightly darker pink on hover */
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

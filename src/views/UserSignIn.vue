@@ -1,10 +1,15 @@
 <template>
-  <div>
+  <div class="cute-signin-form">
     <h1>Sign In to an Account</h1>
-    <input type="text" placeholder="Email" v-model="email" />
-    <input type="password" placeholder="Password" v-model="password" />
-    <p v-if="errorMessage">{{ errorMessage }}</p>
-    <button @click="register">Submit</button>
+    <input type="text" placeholder="Email" v-model="email" class="cute-input" />
+    <input
+      type="password"
+      placeholder="Password"
+      v-model="password"
+      class="cute-input"
+    />
+    <p v-if="errorMessage" class="cute-error-message">{{ errorMessage }}</p>
+    <button @click="signIn" class="cute-submit-button">Submit</button>
   </div>
 </template>
 
@@ -50,3 +55,40 @@ export default {
   },
 };
 </script>
+<style scoped>
+/* Add your custom styles here */
+.cute-signin-form {
+  text-align: center;
+  padding: 20px;
+  background-color: #bbe1fa; /* Light blue background */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+}
+
+.cute-input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #d6e9f9; /* Light blue border */
+  border-radius: 5px;
+}
+
+.cute-submit-button {
+  background-color: #7fadef; /* Medium blue color */
+  color: #fff; /* White text color */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.cute-submit-button:hover {
+  background-color: #5c8cc1; /* Slightly darker blue on hover */
+}
+
+.cute-error-message {
+  color: #ff4d4d; /* Red color for error messages */
+}
+</style>

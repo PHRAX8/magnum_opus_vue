@@ -21,6 +21,13 @@ const router = createRouter({
         requiresAuth: true,
       },
     },
+    {
+      path: "/search",
+      component: () => import("../views/SearchCats.vue"),
+      meta: {
+        requiresAuth: true,
+      },
+    },
   ],
 });
 

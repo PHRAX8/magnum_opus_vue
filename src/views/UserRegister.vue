@@ -1,9 +1,14 @@
 <template>
-  <div>
+  <div class="cute-registration-form">
     <h1>Create an Account</h1>
-    <input type="text" placeholder="Email" v-model="email" />
-    <input type="password" placeholder="Password" v-model="password" />
-    <button @click="register">Submit</button>
+    <input type="text" placeholder="Email" v-model="email" class="cute-input" />
+    <input
+      type="password"
+      placeholder="Password"
+      v-model="password"
+      class="cute-input"
+    />
+    <button @click="register" class="cute-submit-button">Submit</button>
   </div>
 </template>
 
@@ -47,3 +52,36 @@ export default {
   },
 };
 </script>
+<style scoped>
+/* Add your custom styles here */
+.cute-registration-form {
+  text-align: center;
+  padding: 20px;
+  background-color: #fdeada; /* Light yellow background */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+}
+
+.cute-input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #f0f0f0; /* Light grey border */
+  border-radius: 5px;
+}
+
+.cute-submit-button {
+  background-color: #ffcdb2; /* Light peach color */
+  color: #fff; /* White text color */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.cute-submit-button:hover {
+  background-color: #ffad8f; /* Slightly darker peach on hover */
+}
+</style>
